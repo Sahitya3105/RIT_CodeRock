@@ -31,7 +31,12 @@ The pipeline requires four API keys to function. Create a `.env` file in the roo
 3.  Click **"Create API key in new project"**.
 4.  Copy the key and paste it into `GOOGLE_API_KEY` in your `.env`.
 
-### B. Semantic Scholar API Key
+### B. Groq API Key (High-Speed Fallback)
+1.  Go to [Groq Console](https://console.groq.com/keys).
+2.  Click **"Create API Key"**.
+3.  Copy the key and paste it into `GROQ_API_KEY` in your `.env`.
+
+### C. Semantic Scholar API Key
 1.  Go to the [Semantic Scholar API Dashboard](https://www.semanticscholar.org/product/api).
 2.  Sign up for a free developer account.
 3.  Generate an API key from your profile settings.
