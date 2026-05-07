@@ -43,15 +43,22 @@ def main():
     papers = []
     if INCOMING_PAPERS_PATH.exists():
         with open(INCOMING_PAPERS_PATH, "r", encoding="utf-8") as f:
-            papers.extend(json.load(f))
+            try:
+                papers.extend(json.load(f))
+            except:
+                pass
+    
     if THREAT_PAPERS_PATH.exists():
         with open(THREAT_PAPERS_PATH, "r", encoding="utf-8") as f:
-            threats = json.load(f)
-            for t in threats: t["type"] = "Threat"
-            papers.extend(threats)
+            try:
+                threats = json.load(f)
+                for t in threats: t["type"] = "Threat"
+                papers.extend(threats)
+            except:
+                pass
 
     if not papers:
-        print("No papers to analyze.")
+        print("[INFO] No papers found in contracts/. Please run Step 1 (Harvester) first.")
         return
 
     # 3. Analyze in BATCHES to stay under token limits

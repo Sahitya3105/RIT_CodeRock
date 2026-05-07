@@ -26,6 +26,11 @@ if sys.platform == "win32":
 # Add project root to path
 sys.path.insert(0, os.path.dirname(__file__))
 
+# Bootstrap: Ensure necessary directories exist for a fresh pull
+CONTRACTS_DIR = os.path.join(os.path.dirname(__file__), "contracts")
+if not os.path.exists(CONTRACTS_DIR):
+    os.makedirs(CONTRACTS_DIR)
+    print(f"[BOOTSTRAP] Created missing directory: {CONTRACTS_DIR}")
 
 def heartbeat():
     print("=========================================")
