@@ -16,8 +16,8 @@ Ensure the following are installed:
 ## 2. Repository Setup
 Clone the repository and enter the project folder:
 ```bash
-git clone <your-repo-url>
-cd SAMSUNG_PRISM
+git clone https://github.com/Sahitya3105/RIT_CodeRock.git
+cd RIT_CodeRock
 ```
 
 ---
@@ -61,64 +61,50 @@ pip install -r requirements.txt
 
 ---
 
-## 5. OpenClaw Agent Setup
-To run the system autonomously (the "Always-On" mode), install the OpenClaw framework:
+## 5. 🦞 OpenClaw: Autonomous Agent Setup
 
-1.  **Install the CLI**:
-    ```bash
-    npm install -g openclaw-cli
-    ```
-2.  **Initialize the Gateway**:
-    ```bash
-    openclaw setup
-    ```
-    *Follow the prompts to create your account.*
-3.  **Register the Workspace**:
-    Point OpenClaw to your current project folder:
-    ```bash
-    openclaw agents add --id radar --name "RADAR Agent" --path "C:\path\to\SAMSUNG_PRISM"
-    ```
-4.  **Connect the Config**:
-    Ensure the global config (`~/.openclaw/openclaw.json`) points to our skills:
-    ```bash
-    openclaw skills add --path "C:\path\to\SAMSUNG_PRISM\skills"
-    ```
+RADAR is designed to run as an autonomous agent using the **OpenClaw** framework. This allows the system to wake up on a schedule (Heartbeat) and execute skills end-to-end.
 
----
+### Step 1: Installation
+```bash
+npm install -g openclaw
+```
 
-## 6. Activate Autonomous Heartbeat
-To ensure RADAR wakes up every day without human intervention:
+### Step 2: Initialize Workspace
+Inside the `RIT_CodeRock` directory:
+```bash
+openclaw init
+```
+*When prompted for skills, ensure the path points to the `skills/` folder in the project.*
 
-1.  **Enable Cron**: Open `C:\Users\<User>\.openclaw\openclaw.json` and ensure `"cron": { "enabled": true }` is present.
-2.  **Add the Job**: Create a folder `~/.openclaw/cron/` if it doesn't exist, and create a `jobs.json` file:
-    ```json
-    [
-      {
-        "id": "radar-heartbeat",
-        "name": "RADAR Daily Pipeline",
-        "enabled": true,
-        "schedule": { "kind": "cron", "expr": "0 6 * * *", "tz": "Asia/Kolkata" },
-        "sessionTarget": "openclaw",
-        "payload": { "text": "/radar-run" }
-      }
-    ]
-    ```
-3.  **Restart the Service**:
-    ```bash
-    openclaw gateway restart
-    ```
+### Step 3: Start the Gateway
+```bash
+openclaw gateway start
+```
+
+### Step 4: Add the Daily Heartbeat
+To make the agent wake up every day at 9 AM and run the full pipeline:
+```bash
+openclaw cron add --name "RADAR Daily Pipeline" --cron "0 9 * * *" --message "/radar-run"
+```
+
+### Step 5: Dashboard Monitoring
+To see the agent thinking and executing in real-time:
+```bash
+openclaw dashboard
+```
 
 ---
 
-## 7. Testing the Flow
-To verify everything is working immediately (without waiting for 6:00 AM):
+## 6. Testing the Flow
+To verify everything is working immediately (without waiting for the heartbeat):
 
-**Method A: CLI (Quickest)**
+**Method A: CLI (Python Native)**
 ```bash
 python main.py
 ```
 
-**Method B: OpenClaw Dashboard (Visual)**
+**Method B: OpenClaw Dashboard (Agent Mode)**
 1.  Run `openclaw dashboard`.
 2.  In the chat window, type: `/radar-run`.
 3.  Watch the agent fetch papers, analyze threats, generate code, and send the Telegram alert in real-time.
@@ -126,6 +112,7 @@ python main.py
 ---
 
 ## ✅ Success Criteria
-1.  **New File**: A new `.py` file appears in the `generated/` folder.
-2.  **New PR**: A Pull Request is opened on your GitHub repo.
-3.  **New Alert**: A "Macro Trend Detected" card appears in your Telegram chat.
+1.  **Autonomous Bootstrap**: The `contracts/` directory is created automatically on the first run.
+2.  **New PR**: A Pull Request is opened on your GitHub repo with AI-generated optimization code.
+3.  **New Alert**: A "Macro Trend Detected" card or "Critical Threat" alert appears in your Telegram chat.
+4.  **Deduplication**: Running the script a second time should trigger the "Strategic Status: STEADY" report instead of repeating alerts.
