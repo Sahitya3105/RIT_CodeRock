@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+contracts/*.json
+*.log
+.profile_cache.json
+sent_alerts.json
+node_modules/
+.openclaw/
+.gemini/
