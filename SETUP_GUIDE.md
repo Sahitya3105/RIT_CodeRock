@@ -56,6 +56,10 @@ The pipeline requires four API keys to function. Create a `.env` file in the roo
     *   Add `@userinfobot` to the group or send a message and then visit `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates` to find the `chat: { id: -100... }`.
     *   Paste the token into `TELEGRAM_BOT_TOKEN` and the ID into `TELEGRAM_CHAT_ID`.
 
+### E. GitHub Repository Targeting
+1.  In your `.env`, set `GITHUB_ORG` to the name of your GitHub Organization or personal username.
+2.  Set `GITHUB_REPO` to the specific repository where you want the "Core Engine" optimizations to be submitted (e.g., `MyOrg/core-engine`).
+
 ---
 
 ## 4. Install Dependencies
