@@ -41,7 +41,7 @@ RADAR is a **fully autonomous multi-agent system** that monitors the global AI r
 2. **Analyzes** papers using LLMs to map research opportunities to specific Samsung repositories.
 3. **Acts** by autonomously generating production-quality code and opening Pull Requests.
 4. **Broadcasts** real-time strategic alerts and competitor threat intelligence via Telegram.
-5. **Schedules** itself to repeat this pipeline every 6 hours — forever — without any human trigger.
+5. **Schedules** itself to repeat this pipeline every 24 hours — forever — without any human trigger.
 
 ---
 
@@ -222,8 +222,7 @@ In the OpenClaw Dashboard → Cron Jobs → New Job:
 | Job Name | Agent | Schedule | Description |
 |----------|-------|----------|-------------|
 | RADAR Daily Pipeline | radar | `0 9 * * *` | Full pipeline at 9AM daily |
-| RADAR 6-Hour Scan | radar | `0 */6 * * *` | Research scan every 6 hours |
-| RADAR Weekly Trend | radar | `0 8 * * 1` | Monday strategic digest |
+
 
 ### Available Agent Skills
 | Command | Description |
