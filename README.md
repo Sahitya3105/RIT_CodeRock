@@ -266,7 +266,7 @@ RIT_CodeRock/
 
 ---
 
-## ⚠️ Is the Code Ready for Judges to Pull and Run?
+## ⚠️ Is the Code Ready to Pull and Run?
 
 **Yes, with these prerequisites:**
 
@@ -292,7 +292,7 @@ RIT_CodeRock/
 
 ---
 
-## 👥 Team RIT CodeRock
+## 👥 Team CodeRock
 
 Built with ❤️ for the **Samsung PRISM Hackathon**
 
