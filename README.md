@@ -1,7 +1,7 @@
 # 🦞 RADAR — Research & Autonomous Deployment Analytics Robot
 
 > **The World's First Autonomous Research-to-PR Pipeline for Enterprise Intelligence**
-> *Built for the Samsung PRISM Hackathon by Team RIT CodeRock*
+> *Built for the Samsung PRISM Hackathon by Team CodeRock*
 
 ---
 
