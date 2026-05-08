@@ -33,34 +33,64 @@ RADAR follows a modular "Member-based" architecture:
 
 ---
 
-## 🦞 OpenClaw Integration
-RADAR is fully integrated as an **OpenClaw Agent**. This provides:
-- **Autonomous Scheduling**: Cron-based heartbeats for continuous background operation.
-- **Control Dashboard**: A web-based UI (`http://127.0.0.1:18789`) to trigger runs and monitor AI logs.
-- **Skill System**: Native commands like `/radar-run`, `/radar-status`, and `/radar-pr`.
+## 🦞 Intensive OpenClaw Setup Guide
 
----
+RADAR is powered by the **OpenClaw Multi-Agent Orchestrator**. Follow these steps to set up the autonomous control center.
 
-## 🚀 Quick Start Guide
-
-### 1. Prerequisites
-- **Python 3.10+** installed.
-- **Node.js 18+** (for the OpenClaw Gateway).
-- A **GitHub Personal Access Token** (with `repo` scopes).
-
-### 2. Installation
+### 1. Installation & Initialization
+First, install the OpenClaw CLI globally and initialize your workspace:
 ```bash
-# Clone the repository
-git clone https://github.com/Sahitya3105/RIT_CodeRock.git
-cd RIT_CodeRock
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Initialize OpenClaw
+# Install CLI
 npm install -g openclaw
+
+# Initialize OpenClaw in your project directory
 npx openclaw init
 ```
+
+### 2. Model Selection (AI Brain)
+OpenClaw needs an AI model to understand your commands. You can choose between **Groq** (fastest) or **Gemini**.
+
+**To configure your model:**
+1. Open `~/.openclaw/openclaw.json` (or `C:\Users\<User>\.openclaw\openclaw.json` on Windows).
+2. Set your primary model. 
+
+**Recommended (Groq - Llama 3.1):**
+```json
+"model": {
+  "primary": "groq/llama-3.1-8b-instant"
+}
+```
+*(Note: Ensure your `GROQ_API_KEY` is set in your system Environment Variables for the gateway to see it.)*
+
+### 3. Launching the Gateway
+The Gateway is the background engine that runs your agents and cron jobs.
+```bash
+# Start the Gateway service
+npx openclaw gateway start
+```
+*If you see a firewall prompt, click "Allow Access". The gateway runs on port `18789` by default.*
+
+### 4. Setting up Autonomous Cron Jobs (Autonomy)
+To make RADAR truly autonomous, add the scheduled heartbeats:
+```bash
+# Add a 9AM Daily Pipeline run
+npx openclaw cron add --name "RADAR Daily Pipeline" --cron "0 9 * * *" --agent radar --message "/radar-run"
+
+# Add a 6-Hour Strategic Scan
+npx openclaw cron add --name "6-Hour Threat Scan" --cron "0 */6 * * *" --agent radar --message "/radar-alert"
+```
+
+### 5. Accessing the Control Dashboard
+The Dashboard is where you interact with RADAR, see logs, and monitor live research runs.
+```bash
+# Open the Web UI
+npx openclaw dashboard
+```
+*   **Chat Tab**: Talk to RADAR (type `/radar-status` to check health).
+*   **Cron Tab**: See your scheduled jobs and run them manually for testing.
+*   **Logs Tab**: Watch the AI's "Inner Monologue" as it analyzes Samsung's repos.
+
+---
 
 ### 3. Environment Setup (.env)
 Create a `.env` file in the root directory:
