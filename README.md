@@ -307,7 +307,7 @@ RIT_CodeRock/
 
 ---
 
-## 👥 Team CodeRock
+## 👥 Team CodeRock - M S Ramaiah Institute of Technology
 
 Built with ❤️ for the **Samsung PRISM Hackathon**
 
