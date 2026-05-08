@@ -49,6 +49,8 @@ def heartbeat():
     
     # Step 2: Call brain module
     print("Step 2: Processing Intelligence via Gemini & ML...")
+    print("   [INFO] Waiting 15s for API rate limit windows to reset...")
+    time.sleep(15)  # Let OpenRouter rate limit window reset before paper analysis
     run_script("brain/process_papers.py")    # Opportunity mapping
     run_script("brain/trend_analyzer.py")    # Trend clustering & velocity
     

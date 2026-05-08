@@ -10,7 +10,7 @@ This document serves as your "Script" and "Checklist" for creating a high-impact
 | Time | Scene | Key Message |
 | :--- | :--- | :--- |
 | **0:00-0:45** | **Mission Control** (OpenClaw Dashboard) | "Meet RADAR: A living, thinking architect built on **OpenClaw**." Show the Skills Tab and the Cron list. |
-| **0:45-1:30** | **The Waking Agent** (Triggering) | Trigger `/radar-run`. Show the logs as the agent uses tools to "Fetch" and "Analyze" research. |
+| **0:45-1:30** | **The Waking Agent** (Triggering) | Trigger `/radar-run`. Show the logs as the agent uses tools to "Fetch" and "Analyze" research.my openclaw 
 | **1:30-2:15** | **Autonomous Impact** (GitHub) | Switch to GitHub. Show the **Issues** and **PRs** appearing in real-time. Highlight the "AI-Generated" code. |
 | **2:15-2:45** | **The Pulse Alert** (Telegram) | Show the **Threat Alert** and **Trend Card** popping up on a mobile/desktop Telegram. |
 | **2:45-3:00** | **The Persistence** (Steady State) | Run the agent again to show **Deduplication**. It reports "STEADY" instead of spamming. |

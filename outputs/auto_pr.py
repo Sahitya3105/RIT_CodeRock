@@ -330,30 +330,30 @@ def build_gemini_prompt(alert: dict) -> str:
 def generate_code_with_gemini(alert: dict) -> str:
     """
     Call Gemini via the google.genai SDK and return generated Python source.
-    Retries up to 3 times with exponential backoff on 429 / quota errors.
-    Falls back to Groq if Gemini is completely unavailable.
+    Falls back to Groq, then OpenRouter (free) if Gemini is unavailable.
     """
+    import urllib.request
     prompt = build_gemini_prompt(alert)
     safe_print(f"[AI] Generating code for: {alert.get('target_entity', '?')} ...")
 
     # 1. Try Gemini
-    try:
-        client = genai.Client(api_key=GOOGLE_API_KEY)
-        safe_print(f"[GEMINI] Trying {GEMINI_MODEL}...")
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt,
-            config=genai_types.GenerateContentConfig(
-                temperature=0.2,
-                max_output_tokens=8192,
-            ),
-        )
-        code = response.text.strip()
-        return strip_markdown_fences(code)
-    except Exception as exc:
-        safe_print(f"[WARN] Gemini failed: {exc}. Trying Groq Fallback...")
+    if GOOGLE_API_KEY:
+        try:
+            client = genai.Client(api_key=GOOGLE_API_KEY)
+            safe_print(f"[GEMINI] Trying {GEMINI_MODEL}...")
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt,
+                config=genai_types.GenerateContentConfig(
+                    temperature=0.2,
+                    max_output_tokens=8192,
+                ),
+            )
+            return strip_markdown_fences(response.text.strip())
+        except Exception as exc:
+            safe_print(f"[WARN] Gemini failed: {exc}")
 
-    # 2. Try Groq Fallback
+    # 2. Try Groq
     groq_api_key = os.getenv("GROQ_API_KEY")
     if groq_api_key:
         try:
@@ -364,14 +364,48 @@ def generate_code_with_gemini(alert: dict) -> str:
                 messages=[{"role": "user", "content": prompt}],
                 model="llama-3.3-70b-versatile",
             )
-            code = chat_completion.choices[0].message.content.strip()
-            return strip_markdown_fences(code)
+            return strip_markdown_fences(chat_completion.choices[0].message.content.strip())
         except Exception as groq_err:
-            safe_print(f"[ERROR] Groq fallback also failed: {groq_err}")
-            raise
-    else:
-        safe_print("[ERROR] No GROQ_API_KEY found for fallback.")
-        raise
+            safe_print(f"[WARN] Groq fallback failed: {groq_err}")
+
+    # 3. Try OpenRouter (free tier — no daily limit)
+    openrouter_key = os.getenv("OPENROUTER_API_KEY")
+    if openrouter_key:
+        free_models = [
+            "google/gemma-4-31b-it:free",
+            "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+            "nvidia/nemotron-3-super-120b-a12b:free",
+        ]
+        or_headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {openrouter_key}",
+            "HTTP-Referer": "https://github.com/Samsung-PRISM-EdgeAI",
+            "X-Title": "RADAR Auto-Coder"
+        }
+        for model in free_models:
+            try:
+                safe_print(f"[OPENROUTER] Trying {model.split('/')[1]}...")
+                payload = json.dumps({
+                    "model": model,
+                    "messages": [{"role": "user", "content": prompt}]
+                }).encode()
+                req = urllib.request.Request(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    data=payload, headers=or_headers
+                )
+                r = urllib.request.urlopen(req, timeout=90)
+                resp = json.loads(r.read())
+                code = resp["choices"][0]["message"]["content"].strip()
+                safe_print(f"[OPENROUTER] Success with {model.split('/')[1]}")
+                return strip_markdown_fences(code)
+            except Exception as e:
+                safe_print(f"[WARN] OpenRouter {model.split('/')[1]} failed: {str(e)[:80]}")
+                time.sleep(3)
+
+    # 4. Final fallback — generate rich local template
+    safe_print("[INFO] All AI providers unavailable — using rich local template.")
+    return generate_mock_code(alert)
+
 
 def strip_markdown_fences(code: str) -> str:
     """Strip accidental markdown fences AI models sometimes add."""

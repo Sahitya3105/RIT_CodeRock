@@ -75,10 +75,45 @@ def _escape(text: str) -> str:
     return text
 
 
+def generate_insight(cluster_name: str, paper_count: int, competitors: list, implication: str) -> str:
+    """Use OpenRouter to generate a unique strategic insight for this trend."""
+    import urllib.request, json as _json
+    openrouter_key = os.getenv("OPENROUTER_API_KEY")
+    if not openrouter_key:
+        return "Steady growth detected. Focus is shifting from theoretical models to practical, on-device efficiency."
+
+    prompt = (
+        f"You are a strategic AI research analyst at Samsung R&D.\n"
+        f"A research trend has been detected:\n"
+        f"- Topic: {cluster_name}\n"
+        f"- New papers in last 14 days: {paper_count}\n"
+        f"- Key competitors active: {', '.join(competitors) if competitors else 'Various institutions'}\n"
+        f"- Implication: {implication}\n\n"
+        f"Write a single, punchy 1-2 sentence strategic insight for Samsung engineers. "
+        f"Be specific, technical, and urgent. No fluff."
+    )
+    free_models = ["google/gemma-4-31b-it:free", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"]
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {openrouter_key}",
+        "HTTP-Referer": "https://github.com/Samsung-PRISM-EdgeAI",
+        "X-Title": "RADAR"
+    }
+    for model in free_models:
+        try:
+            payload = _json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}]}).encode()
+            req = urllib.request.Request("https://openrouter.ai/api/v1/chat/completions", data=payload, headers=headers)
+            r = urllib.request.urlopen(req, timeout=30)
+            resp = _json.loads(r.read())
+            return resp["choices"][0]["message"]["content"].strip()
+        except Exception:
+            pass
+
+    return f"Critical momentum detected in {cluster_name} — {paper_count} papers signal accelerating competition from {competitors[0] if competitors else 'leading labs'}."
+
+
 def format_trend_card(trend: dict, index: int, total: int) -> str:
-    """
-    Build a beautiful Markdown card for a single live trend.
-    """
+    """Build a beautiful Markdown card for a single live trend."""
     CATEGORY_MAP = {
         "cs.CL": "Computation and Language (NLP)",
         "cs.AI": "Artificial Intelligence",
@@ -88,26 +123,23 @@ def format_trend_card(trend: dict, index: int, total: int) -> str:
         "cs.RO": "Robotics",
     }
 
-    cluster_raw    = trend.get("cluster_name", "Unknown Cluster")
-    # Clean up cluster name if it contains raw codes
+    cluster_raw = trend.get("cluster_name", "Unknown Cluster")
     for code, full_name in CATEGORY_MAP.items():
         if code in cluster_raw:
             cluster_raw = cluster_raw.replace(code, full_name)
-    
-    paper_count     = trend.get("papers_last_14_days", trend.get("paper_count", 0))
-    timeframe_days  = trend.get("timeframe_days", 14)
-    competitors     = trend.get("key_competitors", [])
-    implication     = trend.get("implication", "Strategic shift detected.")
-    
+
+    paper_count    = trend.get("papers_last_14_days", trend.get("paper_count", 0))
+    timeframe_days = trend.get("timeframe_days", 14)
+    competitors    = trend.get("key_competitors", [])
+    implication    = trend.get("implication", "Strategic shift detected.")
+
     # Get top 3 papers
     all_papers = trend.get("papers", [])
-    hot_papers = all_papers[:3] 
-    
-    # Insights (AI could generate this, but we'll provide a template based on counts)
-    if paper_count > 20:
-        insight = "This area is experiencing an exponential surge. Competitors are pivoting towards real-time optimization and safety-alignment."
-    else:
-        insight = "Steady growth detected. Focus is shifting from theoretical models to practical, on-device efficiency."
+    hot_papers = all_papers[:3]
+
+    # AI-generated insight
+    print(f"   [LLM] Generating insight for trend: {cluster_raw[:40]}...")
+    insight = generate_insight(cluster_raw, paper_count, competitors, implication)
 
     # Escaped safe versions
     safe_cluster     = _escape(cluster_raw)
@@ -122,7 +154,7 @@ def format_trend_card(trend: dict, index: int, total: int) -> str:
         f"📊 *{paper_count} New Papers* in last {timeframe_days} days",
         f"🔬 *Key Competitors:* {safe_competitors}",
         "",
-        f"💡 *Insight:* {safe_insight}",
+        f"💡 *AI Insight:* {safe_insight}",
         f"⚠️ *Implication:* {safe_implication}",
         "",
         "🔥 *Hot Papers Currently:*",
@@ -143,6 +175,7 @@ def format_trend_card(trend: dict, index: int, total: int) -> str:
     ]
 
     return "\n".join(lines)
+
 
 
 # ---------------------------------------------------------------------------

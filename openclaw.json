@@ -31,6 +31,7 @@
   "skills": {
     "load": {
       "extraDirs": [
+        "./skills",
         "./openclaw/skills"
       ]
     }

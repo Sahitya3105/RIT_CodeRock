@@ -61,6 +61,9 @@ def main():
         print("[INFO] No papers found in contracts/. Please run Step 1 (Harvester) first.")
         return
 
+    # [DEMO] Limit to top 5 papers — keeps API calls to a minimum (just 2 total)
+    papers = papers[:5]
+
     # 3. Analyze in BATCHES to stay under token limits
     batch_size = 15
     all_actions = []
