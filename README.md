@@ -9,7 +9,7 @@
 
 | Document | Description |
 |----------|-------------|
-| 🎬 [DEMO.md](./DEMO.md) | **Live demo video link** — watch RADAR in action |
+| 🎬 [DEMO.md](./DEMO.md) | **Live demo video link** — watch RADAR in action ,Kindly download the video to view in best quality|
 | 📄 [RIT_CODEROCK.pdf](./RIT_CODEROCK.pdf) | Full project proposal, team details & technical architecture |
 | 🤖 [OpenClaw_AI_Disclosure.docx](./OpenClaw_AI_Disclosure.docx) | AI tool usage disclosure as required by competition guidelines |
 | 🏗️ [Architecture Diagram](./radar_architecture_diagram_1777053872297.png) | Visual system architecture of the full RADAR pipeline |
